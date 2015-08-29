@@ -20,7 +20,9 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     EditText nickName, password, confirmPassword;
@@ -47,8 +49,17 @@ public class MainActivity extends AppCompatActivity {
         } else {
             if (passwordStr.equals(confirmPasswordStr)) {
                 String url = "http://192.168.1.116:8080/index.php?module=app&c=user&m=reg&userName=" + nickNameStr + "&pwd=" + passwordStr + "&confirmPwd=" + confirmPasswordStr;
+//                url = "http://192.168.1.116:8080/index.php";
+                Map<String, String> params = new HashMap<>();
+                params.put("module", "app");
+                params.put("c", "user");
+                params.put("userName", nickNameStr);
+                params.put("pwd", passwordStr);
+                params.put("confirmPwd", confirmPasswordStr);
+                JSONObject object = new JSONObject(params);
+
                 Toast.makeText(this, url, Toast.LENGTH_LONG).show();
-                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<org.json.JSONObject>() {
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, object, new Response.Listener<org.json.JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
                         Toast.makeText(MainActivity.this, "成功：" + jsonObject.toString(), Toast.LENGTH_SHORT).show();
@@ -59,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "失败" + volleyError.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+
                 queue.add(request);
             } else {
             }
