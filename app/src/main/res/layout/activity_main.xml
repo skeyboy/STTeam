@@ -7,85 +7,146 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+<TextView
+    android:layout_width="match_parent"
+    android:id="@+id/logShow"
+    android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@+id/app_icon"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginTop="50dp"
-        android:orientation="vertical">
+        android:layout_marginTop="25dp"
+        android:src="@drawable/ic_launcher" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <ScrollView
 
-            <TextView
-                android:id="@+id/reg_label_name"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="用昵称" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/app_icon"
+        android:layout_marginTop="15dp">
 
-            <EditText
-                android:id="@+id/nick_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/reg_label_name"
-                android:hint="输入昵称"
-                android:minWidth="150dp" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/reg_label_password"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="密  码" />
-
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/reg_label_password"
-                android:hint="输入密码"
-                android:minWidth="150dp" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/reg_label_confirm_password"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="确认密码" />
-
-            <EditText
-                android:id="@+id/confirm_password"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/reg_label_confirm_password"
-                android:hint="确认密码"
-                android:minWidth="150dp" />
-
-        </RelativeLayout>
-
-        <Button
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:onClick="userRegister"
-            android:text="注册" />
-    </LinearLayout>
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+
+            android:minWidth="250dp"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/reg_label_name"
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="用昵称" />
+
+                <EditText
+                    android:id="@+id/nick_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/reg_label_name"
+                    android:hint="输入昵称"
+                    android:minWidth="150dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/reg_label_password"
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="密  码" />
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/reg_label_password"
+                    android:hint="输入密码"
+                    android:inputType="numberSigned"
+                    android:minWidth="150dp"
+                    android:password="true" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/reg_label_confirm_password"
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="确认密码" />
+
+                <EditText
+                    android:id="@+id/confirm_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/reg_label_confirm_password"
+                    android:hint="确认密码"
+                    android:inputType="numberSigned"
+                    android:minWidth="150dp" />
+
+            </RelativeLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:onClick="userRegister"
+                android:text="注册" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:onClick="userLogin"
+                android:text="登陆" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:onClick="addFriend"
+                android:text="添加好友" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:onClick="addFriendByQR"
+                android:text="扫码添加好友" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:onClick="addFriendByQR"
+                android:text="扫码" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:onClick="renderMyQR"
+                android:text="生成我的二维码" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

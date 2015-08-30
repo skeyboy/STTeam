@@ -1,32 +1,46 @@
 package steam.com.stteam;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import steam.com.stteam.http.IStringRequest;
+import steam.com.stteam.http.STApplication;
+import steam.com.stteam.http.Util;
+
 public class MainActivity extends AppCompatActivity {
+    ImageView appIcon;
+    TextView logShow;
     EditText nickName, password, confirmPassword;
     RequestQueue queue;
+    String url = "http://192.168.1.116:8080/index.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,44 +50,155 @@ public class MainActivity extends AppCompatActivity {
         nickName = (EditText) findViewById(R.id.nick_name);
         password = (EditText) findViewById(R.id.password);
         confirmPassword = (EditText) findViewById(R.id.confirm_password);
+        logShow = (TextView) findViewById(R.id.logShow);
+        appIcon = (ImageView) findViewById(R.id.app_icon);
+    }
 
+    /*
+    * @param 在logo位置生成二维码
+    * */
+    public void renderMyQR(View view) {
+        appIcon.setImageBitmap(Util.renderMyQR("http://www.baidu.com", BarcodeFormat.QR_CODE, appIcon.getWidth(), appIcon.getHeight()));
+    }
+
+    public void toast(String tag, String msg) {
+        Toast.makeText(this, tag + ":" + msg.trim().toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    /*
+    * @param 根据toId添加好友
+    * */
+    public void addFriend(View view) {
+        addFriendById("5");
+    }
+
+    public void addFriendById(String toId) {
+        Map<String, String> params = new HashMap<>();
+        params.put("module", "app");
+        params.put("c", "user");
+        params.put("m", "addFriend");
+        params.put("toId", toId);
+
+        IStringRequest request = new IStringRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                toast("添加", url + jsonObject.toString());
+            }
+        }, new ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                toast("添加失败", volleyError.getMessage());
+
+            }
+        });
+        queue.add(request);
 
     }
 
-    public void userRegister(View view) {
+    /*
+    * @param 用户登录
+    *
+    * */
+    public void userLogin(View view) {
+        doIt("login");
+    }
+
+    public void doIt(String m) {
         String nickNameStr = nickName.getText().toString().trim();
         String passwordStr = password.getText().toString().trim();
         String confirmPasswordStr = confirmPassword.getText().toString().trim();
         if (nickNameStr.isEmpty() || passwordStr.isEmpty() || confirmPasswordStr.isEmpty()) {
             Toast.makeText(this, "请检查用户名或者密码", Toast.LENGTH_SHORT).show();
         } else {
-            if (passwordStr.equals(confirmPasswordStr)) {
-                String url = "http://192.168.1.116:8080/index.php?module=app&c=user&m=reg&userName=" + nickNameStr + "&pwd=" + passwordStr + "&confirmPwd=" + confirmPasswordStr;
-//                url = "http://192.168.1.116:8080/index.php";
+            if (passwordStr.equals(confirmPasswordStr) && Util.isAvailable(passwordStr, "^([0-9a-zA-Z]{6,12})$")) {
                 Map<String, String> params = new HashMap<>();
                 params.put("module", "app");
                 params.put("c", "user");
+                params.put("m", m);
                 params.put("userName", nickNameStr);
                 params.put("pwd", passwordStr);
                 params.put("confirmPwd", confirmPasswordStr);
-                JSONObject object = new JSONObject(params);
 
-                Toast.makeText(this, url, Toast.LENGTH_LONG).show();
-                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, object, new Response.Listener<org.json.JSONObject>() {
+                Toast.makeText(this, url + JSON.toJSONString(params), Toast.LENGTH_LONG).show();
+
+
+                IStringRequest strRequest = new IStringRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONObject jsonObject) {
-                        Toast.makeText(MainActivity.this, "成功：" + jsonObject.toString(), Toast.LENGTH_SHORT).show();
+                    public void onResponse(JSONObject json) {
+                        Log.d("返回", json.toString());
+                        JSONObject data = null;
+                        try {
+                            data = json.getJSONObject("data");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if (STApplication.sessionId.isEmpty()) {
+                            try {
+                                String sessionId = data.getString("sessId");
+                                if (!sessionId.isEmpty()) {
+                                    STApplication.sessionId = sessionId;
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+//
+
                     }
                 }, new ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(MainActivity.this, "失败" + volleyError.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        Log.d("返回", volleyError.getLocalizedMessage());
                     }
                 });
+                strRequest.setShouldCache(true);
+                queue.add(strRequest);
 
-                queue.add(request);
+
             } else {
             }
+        }
+    }
+
+    /*
+    * @param 扫码添加好友
+    * @param
+    * */
+    public void addFriendByQR(View view) {
+        IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
+        intentIntegrator.setCaptureActivity(CaptureActivityAnyOrientation.class);
+        intentIntegrator.setOrientationLocked(false);
+        intentIntegrator.initiateScan();
+
+    }
+
+    /*
+    * @param 用户注册
+    * */
+    public void userRegister(View view) {
+        doIt("reg");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        Toast.makeText(this, result.getContents(), Toast.LENGTH_SHORT).show();
+
+        String content = result.getContents().trim();
+
+        if (!content.isEmpty()) {
+            if (content.contains("toId")) {
+                String[] paras = content.split("=");
+                logShow.setText(paras[0] + paras[1]);
+                addFriendById(paras[1]);
+            } else {
+                logShow.setText(content);
+            }
+
         }
     }
 
@@ -83,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
