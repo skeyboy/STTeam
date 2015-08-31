@@ -1,14 +1,22 @@
 package steam.com.stteam;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +26,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -28,14 +35,18 @@ import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import steam.com.stteam.http.IStringRequest;
 import steam.com.stteam.http.STApplication;
-import steam.com.stteam.http.Util;
 
 public class MainActivity extends AppCompatActivity {
+    ScrollView uiContainer;
+    RelativeLayout mainLayout;
     ImageView appIcon;
     TextView logShow;
     EditText nickName, password, confirmPassword;
@@ -46,12 +57,61 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        uiContainer = (ScrollView) findViewById(R.id.ui_container);
+        mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
+        View.OnTouchListener touchListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                return false;
+            }
+        };
+        uiContainer.setOnTouchListener(touchListener);
+        mainLayout.setOnTouchListener(touchListener);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+        }
         queue = Volley.newRequestQueue(this);
         nickName = (EditText) findViewById(R.id.nick_name);
         password = (EditText) findViewById(R.id.password);
         confirmPassword = (EditText) findViewById(R.id.confirm_password);
         logShow = (TextView) findViewById(R.id.logShow);
         appIcon = (ImageView) findViewById(R.id.app_icon);
+        File userIcon = new File(STApplication.appHome + "/" + STApplication.userIconName);
+        if (userIcon.exists()) {
+            BitmapDrawable drawable = new BitmapDrawable(userIcon.getAbsolutePath());
+            appIcon.setImageDrawable(drawable);
+
+        }
+        appIcon.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                BitmapDrawable qrBitmapDra = (BitmapDrawable) appIcon.getDrawable();
+                Bitmap qrBitmap = qrBitmapDra.getBitmap();
+                String appHome = STApplication.appHome;
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                qrBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                try {
+                    FileOutputStream fileOutputStream = new FileOutputStream(appHome + "/"+STApplication.userIconName);
+                    byteArrayOutputStream.writeTo(fileOutputStream);
+                    byteArrayOutputStream.close();
+                    fileOutputStream.flush();
+                    Uri uri;
+                    uri = Uri.fromFile(new File(appHome + "/" + STApplication.userIconName));
+                    fileOutputStream.close();
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("image/*");
+                    intent.putExtra(Intent.EXTRA_STREAM, uri);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    MainActivity.this.startActivity(Intent.createChooser(intent, "分享我的二维码"));
+                } catch (java.io.IOException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }
+        });
     }
 
     /*
@@ -62,7 +122,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void toast(String tag, String msg) {
-        Toast.makeText(this, tag + ":" + msg.trim().toString(), Toast.LENGTH_SHORT).show();
+        if (msg != null) {
+
+            Toast.makeText(this, tag + ":" + msg.trim().toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     /*

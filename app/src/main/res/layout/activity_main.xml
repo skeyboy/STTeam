@@ -6,11 +6,14 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:id="@+id/mainLayout"
     tools:context=".MainActivity">
-<TextView
-    android:layout_width="match_parent"
-    android:id="@+id/logShow"
-    android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/logShow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <ImageView
         android:id="@+id/app_icon"
         android:layout_width="75dp"
@@ -20,7 +23,7 @@
         android:src="@drawable/ic_launcher" />
 
     <ScrollView
-
+        android:id="@+id/ui_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/app_icon"
@@ -28,7 +31,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
 
@@ -50,7 +53,7 @@
 
                 <EditText
                     android:id="@+id/nick_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/reg_label_name"
                     android:hint="输入昵称"
@@ -72,7 +75,7 @@
 
                 <EditText
                     android:id="@+id/password"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/reg_label_password"
                     android:hint="输入密码"
@@ -96,7 +99,7 @@
 
                 <EditText
                     android:id="@+id/confirm_password"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/reg_label_confirm_password"
                     android:hint="确认密码"
@@ -139,6 +142,7 @@
                 android:layout_marginTop="20dp"
                 android:onClick="addFriendByQR"
                 android:text="扫码" />
+
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
