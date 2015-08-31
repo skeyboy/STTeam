@@ -1,8 +1,13 @@
 package steam.com.stteam;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +33,10 @@ import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,12 +55,48 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+        }
         queue = Volley.newRequestQueue(this);
         nickName = (EditText) findViewById(R.id.nick_name);
         password = (EditText) findViewById(R.id.password);
         confirmPassword = (EditText) findViewById(R.id.confirm_password);
         logShow = (TextView) findViewById(R.id.logShow);
         appIcon = (ImageView) findViewById(R.id.app_icon);
+        File userIcon = new File(STApplication.appHome + "/" + STApplication.userIconName);
+        if (userIcon.exists()) {
+            BitmapDrawable drawable = new BitmapDrawable(userIcon.getAbsolutePath());
+            appIcon.setImageDrawable(drawable);
+
+        }
+        appIcon.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                BitmapDrawable qrBitmapDra = (BitmapDrawable) appIcon.getDrawable();
+                Bitmap qrBitmap = qrBitmapDra.getBitmap();
+                String appHome = STApplication.appHome;
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                qrBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                try {
+                    FileOutputStream fileOutputStream = new FileOutputStream(appHome + "/"+STApplication.userIconName);
+                    byteArrayOutputStream.writeTo(fileOutputStream);
+                    byteArrayOutputStream.close();
+                    fileOutputStream.flush();
+                    Uri uri;
+                    uri = Uri.fromFile(new File(appHome + "/" + STApplication.userIconName));
+                    fileOutputStream.close();
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("image/*");
+                    intent.putExtra(Intent.EXTRA_STREAM, uri);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    MainActivity.this.startActivity(Intent.createChooser(intent, "分享我的二维码"));
+                } catch (java.io.IOException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }
+        });
     }
 
     /*
