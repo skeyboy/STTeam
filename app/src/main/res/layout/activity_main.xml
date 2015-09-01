@@ -150,6 +150,13 @@
                 android:onClick="renderMyQR"
                 android:text="生成我的二维码" />
 
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:onClick="aboutUs"
+                android:text="关于" />
+
         </LinearLayout>
     </ScrollView>
 

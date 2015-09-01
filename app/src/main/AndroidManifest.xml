@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
     <application
         android:name=".http.STApplication"
         android:allowBackup="true"
@@ -25,7 +24,9 @@
             </intent-filter>
             <intent-filter>
                 <data android:scheme="*" />
+
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
 
@@ -38,8 +39,10 @@
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"
-            android:windowSoftInputMode="stateAlwaysHidden">
-
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+        <activity
+            android:name=".AboutUsActivity"
+            android:label="@string/title_activity_about_us">
         </activity>
     </application>
 

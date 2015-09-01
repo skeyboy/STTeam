@@ -5,9 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.graphics.drawable.DrawerArrowDrawable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,26 +22,23 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import steam.com.stteam.http.IStringRequest;
 import steam.com.stteam.http.STApplication;
-import steam.com.stteam.http.Util;
+
 
 public class MainActivity extends AppCompatActivity {
     ImageView appIcon;
@@ -79,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 qrBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                 try {
-                    FileOutputStream fileOutputStream = new FileOutputStream(appHome + "/"+STApplication.userIconName);
+                    FileOutputStream fileOutputStream = new FileOutputStream(appHome + "/" + STApplication.userIconName);
                     byteArrayOutputStream.writeTo(fileOutputStream);
                     byteArrayOutputStream.close();
                     fileOutputStream.flush();
@@ -100,10 +96,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*
+    * 关于
+    * */
+    public void aboutUs(View view) {
+        Intent intent = new Intent(this, AboutUsActivity.class);
+        startActivity(intent);
+    }
+
+    /*
     * @param 在logo位置生成二维码
     * */
     public void renderMyQR(View view) {
-        appIcon.setImageBitmap(Util.renderMyQR("http://www.baidu.com", BarcodeFormat.QR_CODE, appIcon.getWidth(), appIcon.getHeight()));
+        appIcon.setImageBitmap(STApplication.Util.renderMyQR("http://www.baidu.com", BarcodeFormat.QR_CODE, appIcon.getWidth(), appIcon.getHeight()));
     }
 
     public void toast(String tag, String msg) {
@@ -155,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         if (nickNameStr.isEmpty() || passwordStr.isEmpty() || confirmPasswordStr.isEmpty()) {
             Toast.makeText(this, "请检查用户名或者密码", Toast.LENGTH_SHORT).show();
         } else {
-            if (passwordStr.equals(confirmPasswordStr) && Util.isAvailable(passwordStr, "^([0-9a-zA-Z]{6,12})$")) {
+            if (passwordStr.equals(confirmPasswordStr) && STApplication.Util.isAvailable(passwordStr, "^([0-9a-zA-Z]{6,12})$")) {
                 Map<String, String> params = new HashMap<>();
                 params.put("module", "app");
                 params.put("c", "user");

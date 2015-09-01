@@ -3,4 +3,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_about_us">AboutUsActivity</string>
+
+    <string name="about_us_contnet">开发二人组，创新的社团类应用</string>
 </resources>

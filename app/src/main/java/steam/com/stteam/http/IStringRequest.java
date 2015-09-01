@@ -15,8 +15,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import steam.com.stteam.Util;
-
 /**
  * Created by mave on 15/8/30.
  */
@@ -33,7 +31,7 @@ public class IStringRequest extends Request<JSONObject> {
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String, String> aHeader = super.getHeaders();
-        Util.userLog(JSON.toJSONString(aHeader));
+        STApplication.Util.userLog(JSON.toJSONString(aHeader));
 
         return aHeader;
     }
@@ -43,11 +41,11 @@ public class IStringRequest extends Request<JSONObject> {
         if (!STApplication.sessionId.isEmpty()) {
             Map<String, String> newParams = new HashMap<>(this.params);
             newParams.put("sessId", STApplication.sessionId);
-            Util.userLog(newParams);
+            STApplication.Util.userLog(newParams);
 
             return newParams;
         }
-        Util.userLog(params);
+        STApplication.Util.userLog(params);
 
         return this.params == null ? null : this.params;
     }
@@ -56,7 +54,7 @@ public class IStringRequest extends Request<JSONObject> {
     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
         try {
             String je = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-            Util.userLog(je);
+            STApplication.Util.userLog(je);
             return Response.success(new JSONObject(je), HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException var3) {
             return Response.error(new ParseError(var3));
