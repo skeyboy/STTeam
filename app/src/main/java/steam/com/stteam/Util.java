@@ -33,6 +33,7 @@ public class Util {
     public static boolean isAvailable(String msg, String reg) {
         Pattern pattern = Pattern.compile(reg);
         return pattern.matcher(msg).matches();
+        
     }
 
     public static void userLog(Object paras) {
