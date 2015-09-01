@@ -10,9 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,14 +50,31 @@ public class MainActivity extends AppCompatActivity {
     EditText nickName, password, confirmPassword;
     RequestQueue queue;
     String url = "http://192.168.1.116:8080/index.php";
+    RelativeLayout mainLayout;
+    ScrollView uiContainer;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
         }
+        mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
+        uiContainer = (ScrollView) findViewById(R.id.ui_container);
+        View.OnTouchListener onTouchListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                return false;
+            }
+        };
+
+        uiContainer.setOnTouchListener(onTouchListener);
+        mainLayout.setOnTouchListener(onTouchListener);
+
         queue = Volley.newRequestQueue(this);
         nickName = (EditText) findViewById(R.id.nick_name);
         password = (EditText) findViewById(R.id.password);
