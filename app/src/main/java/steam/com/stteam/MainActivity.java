@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
     * @param 在logo位置生成二维码
     * */
     public void renderMyQR(View view) {
-        appIcon.setImageBitmap(Util.renderMyQR("http://www.baidu.com", BarcodeFormat.QR_CODE, appIcon.getWidth(), appIcon.getHeight()));
+        appIcon.setImageBitmap(STApplication.Util.renderMyQR("http://www.baidu.com", BarcodeFormat.QR_CODE, appIcon.getWidth(), appIcon.getHeight()));
     }
 
     public void toast(String tag, String msg) {
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         if (nickNameStr.isEmpty() || passwordStr.isEmpty() || confirmPasswordStr.isEmpty()) {
             Toast.makeText(this, "请检查用户名或者密码", Toast.LENGTH_SHORT).show();
         } else {
-            if (passwordStr.equals(confirmPasswordStr) && Util.isAvailable(passwordStr, "^([0-9a-zA-Z]{6,12})$")) {
+            if (passwordStr.equals(confirmPasswordStr) && STApplication.Util.isAvailable(passwordStr, "^([0-9a-zA-Z]{6,12})$")) {
                 Map<String, String> params = new HashMap<>();
                 params.put("module", "app");
                 params.put("c", "user");
