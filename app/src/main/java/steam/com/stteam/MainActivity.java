@@ -30,6 +30,8 @@ import com.android.volley.toolbox.Volley;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.special.ResideMenu.ResideMenu;
+import com.special.ResideMenu.ResideMenuItem;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     String url = "http://192.168.1.116:8080/index.php";
     RelativeLayout mainLayout;
     ScrollView uiContainer;
+    ResideMenu resideMenu;
 
     @Override
 
@@ -61,6 +64,29 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
         }
+
+        resideMenu = new ResideMenu(this);
+        resideMenu.attachToActivity(this);
+        /*
+        * 方向禁用*/
+        resideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_RIGHT);
+        String titles[] = {"Home", "Profile", "Calendar", "Settings"};
+        int icon[] = {R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher};
+
+        for (int i = 0; i < titles.length; i++) {
+            ResideMenuItem item = new ResideMenuItem(this, icon[i], titles[i]);
+            item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (resideMenu.isOpened()) {
+                        resideMenu.closeMenu();
+                    }
+                }
+            });
+            resideMenu.addMenuItem(item, ResideMenu.DIRECTION_LEFT); // or  ResideMenu.DIRECTION_RIGHT
+        }
+
+
         mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
         uiContainer = (ScrollView) findViewById(R.id.ui_container);
         View.OnTouchListener onTouchListener = new View.OnTouchListener() {
