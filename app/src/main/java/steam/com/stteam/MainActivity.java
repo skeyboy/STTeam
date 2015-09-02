@@ -44,6 +44,7 @@ import java.util.Map;
 
 import steam.com.stteam.http.IStringRequest;
 import steam.com.stteam.http.STApplication;
+import steam.com.stteam.widget.NavigationFragment;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -55,12 +56,32 @@ public class MainActivity extends AppCompatActivity {
     RelativeLayout mainLayout;
     ScrollView uiContainer;
     ResideMenu resideMenu;
+    NavigationFragment navigationFragment;
 
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        navigationFragment = (NavigationFragment) getSupportFragmentManager().findFragmentById(R.id.main_navigation);
+        navigationFragment.addLeftBarItem("发反反复复", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "HHHHHHH", Toast.LENGTH_LONG).show();
+            }
+        });
+        navigationFragment.setOnLeftBackItemListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "开关", Toast.LENGTH_LONG).show();
+
+                if (resideMenu.isOpened()) {
+                    resideMenu.closeMenu();
+                } else {
+                    resideMenu.openMenu(ResideMenu.DIRECTION_LEFT);
+                }
+            }
+        });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
         }
@@ -85,6 +106,20 @@ public class MainActivity extends AppCompatActivity {
             });
             resideMenu.addMenuItem(item, ResideMenu.DIRECTION_LEFT); // or  ResideMenu.DIRECTION_RIGHT
         }
+
+        resideMenu.setMenuListener(new ResideMenu.OnMenuListener() {
+            @Override
+            public void openMenu() {
+                Toast.makeText(MainActivity.this, "Menu is opened!", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void closeMenu() {
+                Toast.makeText(MainActivity.this, "Menu is closed!", Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
 
         mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);

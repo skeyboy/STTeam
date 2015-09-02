@@ -4,7 +4,15 @@
     android:layout_height="match_parent"
     tools:context="steam.com.stteam.AboutUsActivity">
 
+    <fragment
+        android:id="@+id/navigation_about_us"
+        android:name="steam.com.stteam.widget.NavigationFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout="@layout/fragment_navigation" />
+
     <ImageView
+        android:layout_below="@+id/navigation_about_us"
         android:id="@+id/about_us_icon"
         android:layout_width="100dp"
         android:layout_height="100dp"

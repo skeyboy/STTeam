@@ -1,16 +1,23 @@
 package steam.com.stteam;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import steam.com.stteam.widget.NavigationFragment;
+
 public class AboutUsActivity extends AppCompatActivity {
+    NavigationFragment navigationFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_us);
+        navigationFragment = (NavigationFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_about_us);
+        navigationFragment.setNavigationTitle("关于");
+        navigationFragment.setNavigationTitleColor(Color.WHITE);
     }
 
     @Override
