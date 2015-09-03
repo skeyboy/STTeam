@@ -93,13 +93,16 @@
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="zxing-android-embedded-3.0.2" level="project" />
+    <orderEntry type="library" exported="" name="libammsdk" level="project" />
     <orderEntry type="library" exported="" name="core-3.2.0" level="project" />
     <orderEntry type="library" exported="" name="nineoldandroids-library-2.4.0" level="project" />
+    <orderEntry type="library" exported="" name="mta-sdk-1.6.2" level="project" />
     <orderEntry type="library" exported="" name="residemenu-1.6" level="project" />
     <orderEntry type="library" exported="" name="fastjson-1.1.6" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.0.0" level="project" />
     <orderEntry type="library" exported="" name="volley" level="project" />
     <orderEntry type="library" exported="" name="support-v4-23.0.0" level="project" />
+    <orderEntry type="library" exported="" name="open_sdk_r5276" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.0.0" level="project" />
   </component>
 </module>

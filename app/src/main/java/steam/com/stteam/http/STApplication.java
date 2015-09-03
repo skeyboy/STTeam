@@ -11,6 +11,9 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.tencent.tauth.Tencent;
 
 import java.io.File;
 import java.net.CookieHandler;
@@ -28,10 +31,25 @@ public class STApplication extends Application {
     public static String sessionId = "";
     public static String appHome;
     public static final String userIconName = "user.jpg";
+    public static final String WX_APP_ID = "wx479cda8a45e3c667";
+    public static final String TENCENT_APP_ID = "1104843090";
 
+    /**
+     * WX发布签名 b026c310d75822aa0631c40332bac875
+     * WX测试签名 7fa8ee4a888213580be8d25b16e072f9
+     */
+    public static final String WX_APP_SECRET = "739f829103cbbd62ffd0f1c84473d791";
+    public static IWXAPI wxApi;
+    public static Tencent tencentApi;
     @Override
     public void onCreate() {
         super.onCreate();
+        wxApi = WXAPIFactory.createWXAPI(this, WX_APP_ID, true);
+        wxApi.registerApp(WX_APP_ID);
+
+        tencentApi = Tencent.createInstance(TENCENT_APP_ID, this);
+
+
         resources = getResources();
         CookieManager cookieManager = new CookieManager();
         CookieHandler.setDefault(cookieManager);

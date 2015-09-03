@@ -1,17 +1,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
-    android:background="#ffffff"
     android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+
+    android:layout_height="match_parent"
+    android:background="#ffffff"
     tools:context=".MainActivity">
 
     <fragment
+        android:id="@+id/main_navigation"
         android:name="steam.com.stteam.widget.NavigationFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/main_navigation"
         tools:layout="@layout/fragment_navigation" />
 
     <TextView
@@ -20,10 +20,10 @@
         android:layout_height="wrap_content" />
 
     <ImageView
-        android:layout_below="@+id/main_navigation"
         android:id="@+id/app_icon"
         android:layout_width="75dp"
         android:layout_height="75dp"
+        android:layout_below="@+id/main_navigation"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
         android:src="@drawable/ic_launcher" />
@@ -162,6 +162,34 @@
                 android:layout_marginTop="20dp"
                 android:onClick="aboutUs"
                 android:text="关于" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:onClick="wxShare"
+                android:text="文本分享" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:onClick="wxShareWithPhoto"
+                android:text="图片分享分享" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:onClick="wxAuthor"
+                android:text="微信授权" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:onClick="qqAuthor"
+                android:text="QQ授权" />
 
         </LinearLayout>
     </ScrollView>
