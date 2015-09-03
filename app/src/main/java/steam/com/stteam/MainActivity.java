@@ -2,12 +2,10 @@ package steam.com.stteam;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -34,30 +32,13 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.special.ResideMenu.ResideMenu;
 import com.special.ResideMenu.ResideMenuItem;
-import com.tencent.connect.UserInfo;
-import com.tencent.connect.common.Constants;
-import com.tencent.mm.sdk.openapi.SendAuth;
-import com.tencent.mm.sdk.openapi.SendMessageToWX;
-import com.tencent.mm.sdk.openapi.WXImageObject;
-import com.tencent.mm.sdk.openapi.WXMediaMessage;
-import com.tencent.mm.sdk.openapi.WXTextObject;
-import com.tencent.mm.sdk.platformtools.BackwardSupportUtil;
-import com.tencent.open.utils.HttpUtils;
-import com.tencent.tauth.IRequestListener;
-import com.tencent.tauth.IUiListener;
-import com.tencent.tauth.Tencent;
-import com.tencent.tauth.UiError;
 
-import org.apache.http.conn.ConnectTimeoutException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,60 +58,8 @@ public class MainActivity extends AppCompatActivity {
     ResideMenu resideMenu;
     NavigationFragment navigationFragment;
 
-    IUiListener tencntUiListener = new IUiListener() {
-        @Override
-        public void onComplete(Object o) {
-            if (o != null) {
-                JSONObject qqResult = (JSONObject) o;
-                MainActivity.this.logShow.setText("QQ授权:" + JSON.toJSONString(qqResult));
-                Toast.makeText(MainActivity.this, o.toString(), Toast.LENGTH_LONG).show();
-                int ret;
-                String pay_token;
-                long expires_in;
-                String pfkey, access_token, openid;
-                int query_authority_cost;
-                try {
-                    ret = qqResult.getInt("ret");
-                    pay_token = qqResult.getString("pay_token");
-                    expires_in = qqResult.getLong("expires_in");
-                    pfkey = qqResult.getString("pfkey");
-                    access_token = qqResult.getString("access_token");
-                    openid = qqResult.getString("openid");
-                    query_authority_cost = qqResult.getInt("query_authority_cost");
-                    Log.d("授权信息", qqResult.toString());
-
-                    String paramsStr = "?oauth_consumer_key=1104843090&access_token=" + access_token + "&openid=" + openid;
-                    IStringRequest request = new IStringRequest(Request.Method.GET, "https://graph.qq.com/user/get_user_info" + paramsStr, null, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject jsonObject) {
-                            Log.d("授权", jsonObject.toString());
-                        }
-                    }, new ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError volleyError) {
-
-                        }
-                    });
-                    MainActivity.this.queue.add(request);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        @Override
-        public void onError(UiError uiError) {
-
-        }
-
-        @Override
-        public void onCancel() {
-
-        }
-    };
-
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -182,11 +111,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void openMenu() {
                 Toast.makeText(MainActivity.this, "Menu is opened!", Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
             public void closeMenu() {
                 Toast.makeText(MainActivity.this, "Menu is closed!", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -247,72 +178,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*
-    * QQ授权
-    * */
-    public void qqAuthor(View view) {
-        if (!STApplication.tencentApi.isSessionValid()) {
-            STApplication.tencentApi.login(this, "get_simple_userinfo", tencntUiListener);
-        } else {
-            Toast.makeText(this, "QQ不可用,需要授权", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    /*
-    * 微信授权登陆*/
-    public void wxAuthor(View view) {
-        SendAuth.Req req = new SendAuth.Req();
-        req.scope = "snsapi_userinfo";
-        req.state = "steam_wx_login";
-        STApplication.wxApi.sendReq(req);
-    }
-
-    /*
     * 关于
     * */
     public void aboutUs(View view) {
         Intent intent = new Intent(this, AboutUsActivity.class);
         startActivity(intent);
-    }
-
-    /*
-    * 微信图片分享
-    * */
-    public void wxShareWithPhoto(View view) {
-        WXImageObject imageObject = new WXImageObject();
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-
-        imageObject.imageData = byteArrayOutputStream.toByteArray();
-        try {
-            byteArrayOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        WXMediaMessage msg = new WXMediaMessage();
-        msg.mediaObject = imageObject;
-
-        SendMessageToWX.Req req = new SendMessageToWX.Req();
-        req.transaction = String.valueOf(System.currentTimeMillis());
-        req.message = msg;
-        STApplication.wxApi.sendReq(req);
-    }
-
-    /*
-    * 微信分享文本*/
-    public void wxShare(View view) {
-        WXTextObject textObject = new WXTextObject();
-        textObject.text = "微信分享文本";
-
-        WXMediaMessage msg = new WXMediaMessage();
-        msg.mediaObject = textObject;
-        msg.description = textObject.text;
-
-        SendMessageToWX.Req req = new SendMessageToWX.Req();
-        req.transaction = String.valueOf(System.currentTimeMillis());
-        req.message = msg;
-        STApplication.wxApi.sendReq(req);
     }
 
     /*
@@ -446,19 +316,10 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode != RESULT_OK) {
             return;
         }
-
-        if (STApplication.tencentApi.onActivityResultData(requestCode, resultCode, data, tencntUiListener)) {
-            return;
-        }
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-
+        Toast.makeText(this, result.getContents(), Toast.LENGTH_SHORT).show();
 
         String content = result.getContents().trim();
-        if (content == null
-                || content.isEmpty()) {
-            return;
-        }
-        Toast.makeText(this, result.getContents(), Toast.LENGTH_SHORT).show();
 
         if (!content.isEmpty()) {
             if (content.contains("toId")) {
@@ -491,6 +352,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 }

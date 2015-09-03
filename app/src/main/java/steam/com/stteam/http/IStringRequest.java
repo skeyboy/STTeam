@@ -1,5 +1,7 @@
 package steam.com.stteam.http;
 
+import android.util.Log;
+
 import com.alibaba.fastjson.JSON;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -30,9 +32,11 @@ public class IStringRequest extends Request<JSONObject> {
 
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-        Map<String, String> aHeader = super.getHeaders();
-        STApplication.Util.userLog(JSON.toJSONString(aHeader));
-
+        Map<String, String> aHeader = new HashMap<>(super.getHeaders());
+        if (!STApplication.getUserSessionId().isEmpty()) {
+            aHeader.put("Cookie", STApplication.getUserSessionId());
+        }
+        Log.d("request header", aHeader.toString());
         return aHeader;
     }
 
@@ -54,7 +58,11 @@ public class IStringRequest extends Request<JSONObject> {
     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
         try {
             String je = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-            STApplication.Util.userLog(je);
+            Log.d("header", response.headers.toString() + "\n" + je);
+            String cookie = response.headers.get("Set-Cookie");
+            if (cookie != null || !cookie.isEmpty()) {
+                STApplication.putUserSessionId(cookie);
+            }
             return Response.success(new JSONObject(je), HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException var3) {
             return Response.error(new ParseError(var3));

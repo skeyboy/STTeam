@@ -30,9 +30,7 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
     compile 'com.google.zxing:core:3.2.0'
     compile files('libs/fastjson-1.1.6.jar')
-    //https://github.com/SpecialCyCi/AndroidResideMenu
+//https://github.com/SpecialCyCi/AndroidResideMenu
     compile 'com.specyci:residemenu:1.6+'
-    compile files('libs/libammsdk.jar')
-    compile files('libs/open_sdk_r5276.jar')
-    compile files('libs/mta-sdk-1.6.2.jar')
+
 }
